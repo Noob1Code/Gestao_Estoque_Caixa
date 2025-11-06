@@ -5,22 +5,24 @@ import { AuthGuard } from './core/guards/auth.guard';
 import { AdminGuard } from './core/guards/admin.guard';
 import { UsuariosComponent } from './pages/admin/usuarios/usuarios.component';
 import { EstoqueComponent } from './pages/admin/estoque/estoque.component';
+import { OperadorGuard } from './core/guards/operador.guard';
+import { CaixaComponent } from './pages/caixa/caixa.component';
 
 
 export const routes: Routes = [
-    { 
-        path: 'login', 
-        component: LoginComponent 
+    {
+        path: 'login',
+        component: LoginComponent
     },
     {
-        path: '', 
+        path: '',
         component: MainLayoutComponent,
         canActivate: [AuthGuard],
         children: [
             // Rotas de Admin
-            { 
-                path: 'admin/usuarios', 
-                component: UsuariosComponent, 
+            {
+                path: 'admin/usuarios',
+                component: UsuariosComponent,
                 canActivate: [AdminGuard] // Protegido (só ADMIN)
             },
             {
@@ -28,11 +30,11 @@ export const routes: Routes = [
                 component: EstoqueComponent,
                 canActivate: [AdminGuard] // Protegido (só ADMIN)
             },
-            // { 
-            //     path: 'caixa', 
-            //     component: CaixaComponent, 
-            //     canActivate: [OperadorGuard]
-            // },
+            {
+                path: 'caixa',
+                component: CaixaComponent,
+                canActivate: [OperadorGuard] // Protegida (só OPERADOR)
+            },
             // {
             //     path: 'relatorios',
             //     component: RelatoriosComponent

@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ProdutoService } from '../../../core/services/produto.service';
-import { ProdutoRequestDTO, ProdutoResponseDTO, MovimentoEstoqueRequestDTO, TipoMovimento } from '../../../core/models/produto.dto';
+import { ProdutoRequestDTO, ProdutoResponseDTO, MovimentoEstoqueRequestDTO } from '../../../core/models/produto.dto';
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { AuthService } from '../../../core/services/auth.service';
 
@@ -43,29 +43,26 @@ import { DropdownModule } from 'primeng/dropdown';
   providers: [ConfirmationService]
 })
 export class EstoqueComponent implements OnInit {
+  private fb = inject(FormBuilder);
+  private authService = inject(AuthService);
+  private confirmationService = inject(ConfirmationService);
+  private messageService = inject(MessageService);
+  private produtoService = inject(ProdutoService);
 
   produtos: ProdutoResponseDTO[] = [];
-  produtoDialog: boolean = false;
+  produtoDialog = false;
   produtoForm!: FormGroup;
-  isEditMode: boolean = false;
+  isEditMode = false;
   selectedProdutoId: number | null = null;
 
-  movimentoDialog: boolean = false;
+  movimentoDialog = false;
   movimentoForm!: FormGroup;
   produtoSelecionado: ProdutoResponseDTO | null = null;
 
-  tiposMovimento: any[] = [
+  tiposMovimento: { label: string, value: string }[] = [
     { label: 'Entrada (Compra)', value: 'ENTRADA' },
     { label: 'Ajuste (Perda/Acerto)', value: 'AJUSTE' }
   ];
-
-  constructor(
-    private fb: FormBuilder,
-    private produtoService: ProdutoService,
-    private messageService: MessageService,
-    private confirmationService: ConfirmationService,
-    private authService: AuthService
-  ) { }
 
   ngOnInit(): void {
     this.produtoForm = this.fb.group({
@@ -90,7 +87,7 @@ export class EstoqueComponent implements OnInit {
       next: (data) => {
         this.produtos = data;
       },
-      error: (err) => {
+      error: () => { 
         this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao carregar produtos.' });
       }
     });
@@ -114,18 +111,13 @@ export class EstoqueComponent implements OnInit {
     this.produtoSelecionado = null;
   }
 
-  // Ação: Abrir o dialog para EDITAR um produto
   abrirDialogEditar(produto: ProdutoResponseDTO): void {
     this.isEditMode = true;
     this.selectedProdutoId = produto.id;
-
-    // Preenche o formulário com os dados do produto
     this.produtoForm.patchValue(produto);
-
     this.produtoDialog = true;
   }
 
-  // Ação: Confirmar e salvar (Criar ou Atualizar)
   salvarProduto(): void {
     if (this.produtoForm.invalid) {
       this.produtoForm.markAllAsTouched();
@@ -142,7 +134,7 @@ export class EstoqueComponent implements OnInit {
           this.fecharDialog();
           this.carregarProdutos();
         },
-        error: (err) => {
+        error: (err) => { // Não mudei para '_err' pois 'err.error.message' está em uso
           this.messageService.add({ severity: 'error', summary: 'Erro', detail: err.error.message || 'Falha ao atualizar produto.' });
         }
       });
@@ -154,14 +146,13 @@ export class EstoqueComponent implements OnInit {
           this.fecharDialog();
           this.carregarProdutos();
         },
-        error: (err) => {
+        error: (err) => { // Não mudei para '_err' pois 'err.error.message' está em uso
           this.messageService.add({ severity: 'error', summary: 'Erro', detail: err.error.message || 'Falha ao criar produto.' });
         }
       });
     }
   }
 
-  // Ação: Pedir confirmação para DELETAR
   confirmarExclusao(id: number): void {
     this.confirmationService.confirm({
       message: 'Tem certeza que deseja excluir este produto?',
@@ -175,7 +166,7 @@ export class EstoqueComponent implements OnInit {
             this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Produto excluído.' });
             this.carregarProdutos();
           },
-          error: (err) => {
+          error: () => {
             this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao excluir produto.' });
           }
         });
@@ -187,7 +178,7 @@ export class EstoqueComponent implements OnInit {
     this.produtoDialog = false;
   }
 
- salvarMovimento(): void {
+  salvarMovimento(): void {
     if (this.movimentoForm.invalid || !this.produtoSelecionado) {
       this.movimentoForm.markAllAsTouched();
       this.messageService.add({ severity: 'warn', summary: 'Atenção', detail: 'Preencha o Tipo e a Quantidade.' });

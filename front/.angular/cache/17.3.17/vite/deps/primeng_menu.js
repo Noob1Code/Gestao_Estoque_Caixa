@@ -8,6 +8,12 @@ import {
   TooltipModule
 } from "./chunk-3VRHFY3H.js";
 import {
+  animate,
+  style,
+  transition,
+  trigger
+} from "./chunk-I54QP7DZ.js";
+import {
   DomSanitizer
 } from "./chunk-Y6VDGAZN.js";
 import "./chunk-2IRRX5HF.js";
@@ -19,12 +25,6 @@ import {
   ConnectedOverlayScrollHandler,
   DomHandler
 } from "./chunk-JZQAVOZS.js";
-import {
-  animate,
-  style,
-  transition,
-  trigger
-} from "./chunk-I54QP7DZ.js";
 import {
   CommonModule,
   DOCUMENT,

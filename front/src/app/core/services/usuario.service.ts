@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { UsuarioRequestDTO, UsuarioResponseDTO } from '../models/usuario.dto';
 
@@ -9,8 +9,7 @@ import { UsuarioRequestDTO, UsuarioResponseDTO } from '../models/usuario.dto';
 export class UsuarioService {
 
   private apiUrl = 'http://localhost:8080/api/usuarios';
-
-  constructor(private http: HttpClient) { }
+  private http = inject(HttpClient);
 
   listarTodos(): Observable<UsuarioResponseDTO[]> {
     return this.http.get<UsuarioResponseDTO[]>(this.apiUrl);

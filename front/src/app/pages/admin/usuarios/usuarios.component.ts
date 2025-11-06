@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { UsuarioService } from '../../../core/services/usuario.service';
 import { UsuarioRequestDTO, UsuarioResponseDTO } from '../../../core/models/usuario.dto';
 import { MessageService, ConfirmationService } from 'primeng/api';
-import { AuthService } from '../../../core/services/auth.service'; 
+import { AuthService } from '../../../core/services/auth.service';
 
 // Importações PrimeNG
 import { TableModule } from 'primeng/table';
@@ -44,24 +44,21 @@ import { PasswordModule } from 'primeng/password';
 export class UsuariosComponent implements OnInit {
 
   usuarios: UsuarioResponseDTO[] = [];
-  usuarioDialog: boolean = false;
+  usuarioDialog = false;
   usuarioForm!: FormGroup;
-  
-  isEditMode: boolean = false;
+  isEditMode = false;
   selectedUsuarioId: number | null = null;
 
-  perfis: any[] = [
+  perfis: { label: string, value: string }[] = [
     { label: 'Administrador', value: 'ADMIN' },
     { label: 'Operador', value: 'OPERADOR' }
   ];
 
-  constructor(
-    private fb: FormBuilder,
-    private usuarioService: UsuarioService,
-    private messageService: MessageService,
-    private confirmationService: ConfirmationService,
-    private authService: AuthService 
-  ) { }
+  private fb = inject(FormBuilder);
+  private authService = inject(AuthService);
+  private confirmationService = inject(ConfirmationService);
+  private messageService = inject(MessageService);
+  private usuarioService = inject(UsuarioService);
 
   ngOnInit(): void {
     this.usuarioForm = this.fb.group({
@@ -80,7 +77,7 @@ export class UsuariosComponent implements OnInit {
       next: (data) => {
         this.usuarios = data;
       },
-      error: (err) => {
+      error: () => {
         this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao carregar usuários.' });
       }
     });
@@ -90,7 +87,7 @@ export class UsuariosComponent implements OnInit {
     this.isEditMode = false;
     this.selectedUsuarioId = null;
     this.usuarioForm.reset({ ativo: true });
-    
+
     this.setSenhaValidators(true);
 
     this.usuarioDialog = true;
@@ -99,7 +96,7 @@ export class UsuariosComponent implements OnInit {
   abrirDialogEditar(usuario: UsuarioResponseDTO): void {
     this.isEditMode = true;
     this.selectedUsuarioId = usuario.id;
-    
+
     this.usuarioForm.patchValue({
       nomeCompleto: usuario.nomeCompleto,
       email: usuario.email,
@@ -175,7 +172,7 @@ export class UsuariosComponent implements OnInit {
             this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Usuário excluído.' });
             this.carregarUsuarios();
           },
-          error: (err) => {
+          error: () => {
             this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Falha ao excluir usuário.' });
           }
         });
@@ -189,10 +186,10 @@ export class UsuariosComponent implements OnInit {
 
   private setSenhaValidators(isRequired: boolean): void {
     const senhaControl = this.usuarioForm.get('senha');
-    
+
     const strengthValidators = [
-        Validators.minLength(8),
-        Validators.pattern('^(?=.*[A-Z])(?=.*\\d).*$') 
+      Validators.minLength(8),
+      Validators.pattern('^(?=.*[A-Z])(?=.*\\d).*$')
     ];
 
     if (isRequired) {

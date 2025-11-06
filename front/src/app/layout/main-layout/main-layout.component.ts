@@ -1,13 +1,14 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink, RouterOutlet } from '@angular/router';
+import { RouterOutlet } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
-import { Subscription } from 'rxjs'; 
+import { Subscription } from 'rxjs';
 import { SidebarModule } from 'primeng/sidebar';
 import { ButtonModule } from 'primeng/button';
 import { ToolbarModule } from 'primeng/toolbar';
 import { MenuModule } from 'primeng/menu';
 import { MenuItem } from 'primeng/api';
+import { inject } from '@angular/core';
 
 @Component({
   selector: 'app-main-layout',
@@ -15,7 +16,6 @@ import { MenuItem } from 'primeng/api';
   imports: [
     CommonModule,
     RouterOutlet,
-    RouterLink,
     SidebarModule,
     ButtonModule,
     ToolbarModule,
@@ -24,30 +24,28 @@ import { MenuItem } from 'primeng/api';
   templateUrl: './main-layout.component.html',
   styleUrls: ['./main-layout.component.css']
 })
-export class MainLayoutComponent implements OnInit, OnDestroy { 
+export class MainLayoutComponent implements OnInit, OnDestroy {
 
   sidebarVisible = false;
   menuItems: MenuItem[] = [];
-  nomeUsuario: string = '';
+  nomeUsuario = '';
 
   private userSubscription: Subscription | undefined;
-
-  constructor(private authService: AuthService) {
-  }
+  private authService = inject(AuthService);
 
   ngOnInit(): void {
     this.userSubscription = this.authService.currentUser.subscribe(usuario => {
       if (usuario) {
         this.nomeUsuario = usuario.nomeCompleto || 'Usuário';
-        const perfil = usuario.role || usuario.perfil;
+        const perfil = usuario.perfil;
         this.carregarMenu(perfil);
       } else {
         this.nomeUsuario = '';
-        this.carregarMenu(null); 
+        this.carregarMenu(null);
       }
     });
   }
-  
+
   ngOnDestroy(): void {
     if (this.userSubscription) {
       this.userSubscription.unsubscribe();

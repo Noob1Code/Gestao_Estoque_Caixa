@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { CanActivate, Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { MessageService } from 'primeng/api';
@@ -8,11 +8,9 @@ import { MessageService } from 'primeng/api';
 })
 export class AdminGuard implements CanActivate {
 
-  constructor(
-    private authService: AuthService,
-    private router: Router,
-    private messageService: MessageService
-  ) {}
+  private authService = inject(AuthService);
+  private router = inject(Router);
+  private messageService = inject(MessageService);
 
   canActivate(): boolean {
     const userRole = this.authService.getUserRole();
@@ -27,9 +25,9 @@ export class AdminGuard implements CanActivate {
         summary: 'Acesso Negado',
         detail: 'Você não tem permissão para acessar esta página.'
       });
-      
+
       // Redireciona para a página principal (ou 'não autorizado')
-      this.router.navigate(['/']); 
+      this.router.navigate(['/']);
       return false;
     }
   }

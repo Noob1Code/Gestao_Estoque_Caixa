@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
@@ -26,15 +26,13 @@ import { PasswordModule } from 'primeng/password';
 })
 export class LoginComponent implements OnInit {
 
+  private fb = inject(FormBuilder);
+  private authService = inject(AuthService);
+  private router = inject(Router);
+  private messageService = inject(MessageService);
+
   loginForm!: FormGroup;
   loading = false;
-
-  constructor(
-    private fb: FormBuilder,
-    private authService: AuthService,
-    private router: Router,
-    private messageService: MessageService
-  ) { }
 
   ngOnInit(): void {
     this.loginForm = this.fb.group({
@@ -53,19 +51,19 @@ export class LoginComponent implements OnInit {
 
     this.authService.login(credentials).subscribe({
       next: (response) => {
-        this.messageService.add({ 
-          severity: 'success', 
-          summary: 'Sucesso', 
-          detail: `Bem-vindo, ${response.nome}!` 
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Sucesso',
+          detail: `Bem-vindo, ${response.nomeCompleto}!`
         });
-        
-        this.router.navigate(['/']); 
+
+        this.router.navigate(['/']);
       },
-      error: (err) => {
+      error: () => {
         this.loading = false;
-        this.messageService.add({ 
-          severity: 'error', 
-          summary: 'Erro', 
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erro',
           detail: 'E-mail ou senha inválidos.'
         });
       }

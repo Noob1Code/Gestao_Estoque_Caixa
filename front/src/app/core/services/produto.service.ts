@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ProdutoRequestDTO, ProdutoResponseDTO, MovimentoEstoqueRequestDTO } from '../models/produto.dto';
 @Injectable({
@@ -8,8 +8,7 @@ import { ProdutoRequestDTO, ProdutoResponseDTO, MovimentoEstoqueRequestDTO } fro
 export class ProdutoService {
 
   private apiUrl = 'http://localhost:8080/api/produtos';
-
-  constructor(private http: HttpClient) { }
+  private http= inject( HttpClient);
 
   listarTodos(): Observable<ProdutoResponseDTO[]> {
     return this.http.get<ProdutoResponseDTO[]>(this.apiUrl);
