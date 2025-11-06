@@ -9,6 +9,5 @@ import com.gestao.back.model.entities.Produto;
 
 @Repository
 public interface ProdutoRepository extends JpaRepository<Produto, Long> {
-    Optional<Produto> findByID(Long id);
-    Optional<Object> findByCodigo(int codigo);
+    Optional<Object> findByCodigo(String codigo);
 }

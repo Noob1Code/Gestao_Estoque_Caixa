@@ -1,42 +1,44 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package com.gestao.back.model.entities;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import java.math.BigDecimal;
 
+/**
+ *
+ * @author Kayqu
+ */
+@Entity
+@Table(name = "itens_venda")
 public class ItemVenda {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Quantidade não pode ser vazio")
+    @ManyToOne
+    @JoinColumn(name = "venda_id", nullable = false)
+    private Venda venda;
+
+    @ManyToOne
+    @JoinColumn(name = "produto_id", nullable = false)
+    private Produto produto;
+
     @Column(nullable = false)
-    private int quantidade;
+    private Integer quantidade;
 
     @Column(nullable = false)
     private BigDecimal precoUnitario;
-
-    @Column(nullable = false)
-    private BigDecimal subtotal;
-
-    @ManyToOne
-    @JoinColumn(name = "produti_id", nullable = false)
-    private Produto produto;
-
-    @ManyToOne
-    @JoinColumn(name = "venda_id", nullable = false)
-    private Venda vendas;
-
-    public ItemVenda(Long id, int quantidade, BigDecimal precoUnitario, BigDecimal subtotal, Produto produto, Venda vendas) {
-        this.id = id;
-        this.quantidade = quantidade;
-        this.precoUnitario = precoUnitario;
-        this.subtotal = subtotal;
-        this.produto = produto;
-        this.vendas = vendas;
-    }
 
     public Long getId() {
         return id;
@@ -46,11 +48,27 @@ public class ItemVenda {
         this.id = id;
     }
 
-    public int getQuantidade() {
+    public Venda getVenda() {
+        return venda;
+    }
+
+    public void setVenda(Venda venda) {
+        this.venda = venda;
+    }
+
+    public Produto getProduto() {
+        return produto;
+    }
+
+    public void setProduto(Produto produto) {
+        this.produto = produto;
+    }
+
+    public Integer getQuantidade() {
         return quantidade;
     }
 
-    public void setQuantidade(int quantidade) {
+    public void setQuantidade(Integer quantidade) {
         this.quantidade = quantidade;
     }
 
@@ -62,27 +80,4 @@ public class ItemVenda {
         this.precoUnitario = precoUnitario;
     }
 
-    public BigDecimal getSubtotal() {
-        return subtotal;
-    }
-
-    public void setSubtotal(BigDecimal subtotal) {
-        this.subtotal = subtotal;
-    }
-
-    public Produto getProduto() {
-        return produto;
-    }
-
-    public void setProduto(Produto produto) {
-        this.produto = produto;
-    }
-
-    public Venda getVendas() {
-        return vendas;
-    }
-
-    public void setVendas(Venda vendas) {
-        this.vendas = vendas;
-    }
 }

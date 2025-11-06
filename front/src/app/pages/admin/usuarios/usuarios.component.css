@@ -1,7 +1,9 @@
+/* Garante que o dropdown dentro do formulário use 100% da largura */
 :host ::ng-deep .p-dropdown {
   width: 100%;
 }
 
+/* Garante que o input de senha use 100% da largura */
 :host ::ng-deep .p-password {
   width: 100%;
 }

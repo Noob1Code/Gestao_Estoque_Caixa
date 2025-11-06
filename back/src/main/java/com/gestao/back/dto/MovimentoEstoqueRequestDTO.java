@@ -4,7 +4,7 @@
  */
 package com.gestao.back.dto;
 
-import jakarta.validation.constraints.NotBlank;
+import com.gestao.back.model.enums.TipoMovimento;
 import jakarta.validation.constraints.NotNull;
 
 /**
@@ -12,26 +12,47 @@ import jakarta.validation.constraints.NotNull;
  * @author Kayqu
  */
 public class MovimentoEstoqueRequestDTO {
-    @NotBlank 
-    private String tipo; 
+
+    @NotNull
+    private TipoMovimento tipo;
 
     @NotNull
     private Integer quantidade;
 
     private String motivo;
-    
-    @NotNull 
+
+    @NotNull
     private Long usuarioId;
 
-    public String getTipo() { return tipo; }
-    public void setTipo(String tipo) { this.tipo = tipo; }
+    public TipoMovimento getTipo() {
+        return tipo;
+    }
 
-    public Integer getQuantidade() { return quantidade; }
-    public void setQuantidade(Integer quantidade) { this.quantidade = quantidade; }
+    public void setTipo(TipoMovimento tipo) {
+        this.tipo = tipo;
+    }
 
-    public String getMotivo() { return motivo; }
-    public void setMotivo(String motivo) { this.motivo = motivo; }
-    
-    public Long getUsuarioId() { return usuarioId; }
-    public void setUsuarioId(Long usuarioId) { this.usuarioId = usuarioId; }
+    public Integer getQuantidade() {
+        return quantidade;
+    }
+
+    public void setQuantidade(Integer quantidade) {
+        this.quantidade = quantidade;
+    }
+
+    public String getMotivo() {
+        return motivo;
+    }
+
+    public void setMotivo(String motivo) {
+        this.motivo = motivo;
+    }
+
+    public Long getUsuarioId() {
+        return usuarioId;
+    }
+
+    public void setUsuarioId(Long usuarioId) {
+        this.usuarioId = usuarioId;
+    }
 }

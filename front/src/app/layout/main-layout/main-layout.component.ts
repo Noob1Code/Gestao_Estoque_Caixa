@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
-
+import { Subscription } from 'rxjs'; 
 import { SidebarModule } from 'primeng/sidebar';
 import { ButtonModule } from 'primeng/button';
 import { ToolbarModule } from 'primeng/toolbar';
@@ -24,30 +24,39 @@ import { MenuItem } from 'primeng/api';
   templateUrl: './main-layout.component.html',
   styleUrls: ['./main-layout.component.css']
 })
-export class MainLayoutComponent implements OnInit {
+export class MainLayoutComponent implements OnInit, OnDestroy { 
 
   sidebarVisible = false;
   menuItems: MenuItem[] = [];
   nomeUsuario: string = '';
 
+  private userSubscription: Subscription | undefined;
+
   constructor(private authService: AuthService) {
   }
 
   ngOnInit(): void {
-    const usuario = this.authService.getLoggedUser();
-    const perfil = this.authService.getUserRole();
-
-    if (usuario) {
-      this.nomeUsuario = usuario.nomeCompleto || 'Usuário';
+    this.userSubscription = this.authService.currentUser.subscribe(usuario => {
+      if (usuario) {
+        this.nomeUsuario = usuario.nomeCompleto || 'Usuário';
+        const perfil = usuario.role || usuario.perfil;
+        this.carregarMenu(perfil);
+      } else {
+        this.nomeUsuario = '';
+        this.carregarMenu(null); 
+      }
+    });
+  }
+  
+  ngOnDestroy(): void {
+    if (this.userSubscription) {
+      this.userSubscription.unsubscribe();
     }
-
-    this.carregarMenu(perfil);
   }
 
   private carregarMenu(perfil: string | null): void {
     const menu: MenuItem[] = [];
 
-    // 1. Itens do ADMIN
     if (perfil === 'ADMIN') {
       menu.push({
         label: 'Administração',
@@ -66,7 +75,6 @@ export class MainLayoutComponent implements OnInit {
       });
     }
 
-    // 2. Itens do OPERADOR
     if (perfil === 'OPERADOR') {
       menu.push({
         label: 'Operador',
@@ -80,16 +88,18 @@ export class MainLayoutComponent implements OnInit {
       });
     }
 
-    menu.push({
-      label: 'Geral',
-      items: [
-        {
-          label: 'Relatórios',
-          icon: 'pi pi-chart-bar',
-          routerLink: '/relatorios'
-        }
-      ]
-    });
+    if (perfil) {
+      menu.push({
+        label: 'Geral',
+        items: [
+          {
+            label: 'Relatórios',
+            icon: 'pi pi-chart-bar',
+            routerLink: '/relatorios'
+          }
+        ]
+      });
+    }
 
     this.menuItems = menu;
   }

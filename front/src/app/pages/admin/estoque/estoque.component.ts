@@ -77,10 +77,8 @@ export class EstoqueComponent implements OnInit {
     });
 
     this.movimentoForm = this.fb.group({
-      // O 'tipo' determinará se a quantidade é + ou -
       tipo: [null, [Validators.required]],
-      // Para 'AJUSTE', permitiremos números negativos (ex: -5 para perdas)
-      quantidade: [null, [Validators.required, Validators.pattern(/^-?[0-9]\d*$/)]], // Permite inteiros (positivos ou negativos)
+      quantidade: [null, [Validators.required, Validators.pattern(/^-?[0-9]\d*$/)]],
       motivo: ['']
     });
 
@@ -98,18 +96,16 @@ export class EstoqueComponent implements OnInit {
     });
   }
 
-  // Ação: Abrir o dialog para um NOVO produto
   abrirDialogNovo(): void {
     this.isEditMode = false;
     this.selectedProdutoId = null;
-    // Reseta o form com valores padrão
     this.produtoForm.reset({ quantidadeEstoque: 0, precoUnitario: 0 });
     this.produtoDialog = true;
   }
 
   abrirDialogMovimento(produto: ProdutoResponseDTO): void {
-    this.produtoSelecionado = produto; // Guarda o produto selecionado
-    this.movimentoForm.reset(); // Limpa o formulário
+    this.produtoSelecionado = produto;
+    this.movimentoForm.reset();
     this.movimentoDialog = true;
   }
 
@@ -191,7 +187,7 @@ export class EstoqueComponent implements OnInit {
     this.produtoDialog = false;
   }
 
-  salvarMovimento(): void {
+ salvarMovimento(): void {
     if (this.movimentoForm.invalid || !this.produtoSelecionado) {
       this.movimentoForm.markAllAsTouched();
       this.messageService.add({ severity: 'warn', summary: 'Atenção', detail: 'Preencha o Tipo e a Quantidade.' });
@@ -201,17 +197,17 @@ export class EstoqueComponent implements OnInit {
     const formData = this.movimentoForm.value;
 
     if (formData.tipo === 'ENTRADA' && formData.quantidade <= 0) {
-       this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Para ENTRADA, a quantidade deve ser positiva.' });
-       return;
+      this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Para ENTRADA, a quantidade deve ser positiva.' });
+      return;
     }
 
-    const usuarioLogado = this.authService.getLoggedUser();
+    const usuarioLogado = this.authService.getLoggedUser;
     if (!usuarioLogado || !usuarioLogado.id) {
-        this.messageService.add({ severity: 'error', summary: 'Erro Fatal', detail: 'Sessão expirada. Faça login novamente.' });
-        this.authService.logout();
-        return;
+      this.messageService.add({ severity: 'error', summary: 'Erro Fatal', detail: 'Sessão expirada. Faça login novamente.' });
+      this.authService.logout();
+      return;
     }
-    
+
     const request: MovimentoEstoqueRequestDTO = {
       tipo: formData.tipo,
       quantidade: Number(formData.quantidade),
@@ -221,10 +217,10 @@ export class EstoqueComponent implements OnInit {
 
     this.produtoService.movimentarEstoque(this.produtoSelecionado.id, request).subscribe({
       next: (produtoAtualizado) => {
-        this.messageService.add({ 
-          severity: 'success', 
-          summary: 'Sucesso', 
-          detail: `Estoque de ${produtoAtualizado.nome} atualizado para ${produtoAtualizado.quantidadeEstoque}.` 
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Sucesso',
+          detail: `Estoque de ${produtoAtualizado.nome} atualizado para ${produtoAtualizado.quantidadeEstoque}.`
         });
         this.fecharDialogMovimento();
         this.carregarProdutos();

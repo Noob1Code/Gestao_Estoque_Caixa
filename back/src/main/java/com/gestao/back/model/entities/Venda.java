@@ -1,70 +1,85 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package com.gestao.back.model.entities;
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Positive;
-
+/**
+ *
+ * @author Kayqu
+ */
 @Entity
-@Table(name = "Vendas")
+@Table(name = "vendas")
 public class Venda {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-
-    @NotBlank(message = "Preço é obrigatorio")
-    @Positive(message = "Quantidade deve ser maior que 0")
-    @Column(nullable = false)
-    private BigDecimal valorTotal;
-
-    @NotBlank(message = "Preço é obrigatorio")
-    @Positive(message = "Quantidade deve ser maior que 0")
-    @Column(nullable = false)
-    private BigDecimal valorRecebido;
-
-    @NotBlank(message = "Preço é obrigatorio")
-    @Positive(message = "Quantidade deve ser maior que 0")
-    @Column(nullable = false)
-    private BigDecimal troco;
+    private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "usuario_id")
+    @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
 
     @Column(nullable = false)
-    private LocalDateTime data;
+    private LocalDateTime dataVenda;
 
-    @NotBlank(message = "Itens é obrigatorio")
-    private List<ItemVenda> itens;
+    @Column(nullable = false)
+    private BigDecimal total;
 
-    public Venda(long id, BigDecimal valorTotal, BigDecimal valorRecebido, BigDecimal troco, Usuario usuario, LocalDateTime data, List<ItemVenda> itens) {
-        this.id = id;
-        this.valorTotal = valorTotal;
-        this.valorRecebido = valorRecebido;
-        this.troco = troco;
-        this.usuario = usuario;
-        this.data = data;
-        this.itens = itens;
-    }
+    @Column(nullable = false)
+    private BigDecimal valorRecebido;
 
-    public long getId() {
+    @Column(nullable = false)
+    private BigDecimal troco;
+
+    @OneToMany(mappedBy = "venda", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<ItemVenda> itens = new HashSet<>();
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public BigDecimal getValorTotal() {
-        return valorTotal;
+    public Usuario getUsuario() {
+        return usuario;
     }
 
-    public void setValorTotal(BigDecimal valorTotal) {
-        this.valorTotal = valorTotal;
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
+    public LocalDateTime getDataVenda() {
+        return dataVenda;
+    }
+
+    public void setDataVenda(LocalDateTime dataVenda) {
+        this.dataVenda = dataVenda;
+    }
+
+    public BigDecimal getTotal() {
+        return total;
+    }
+
+    public void setTotal(BigDecimal total) {
+        this.total = total;
     }
 
     public BigDecimal getValorRecebido() {
@@ -83,27 +98,16 @@ public class Venda {
         this.troco = troco;
     }
 
-    public Usuario getUsuario() {
-        return usuario;
-    }
-
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
-    }
-
-    public LocalDateTime getData() {
-        return data;
-    }
-
-    public void setData(LocalDateTime data) {
-        this.data = data;
-    }
-
-    public List<ItemVenda> getItens() {
+    public Set<ItemVenda> getItens() {
         return itens;
     }
 
-    public void setItens(List<ItemVenda> itens) {
+    public void setItens(Set<ItemVenda> itens) {
         this.itens = itens;
+    }
+    
+    public void adicionarItem(ItemVenda item) {
+        this.itens.add(item);
+        item.setVenda(this);
     }
 }

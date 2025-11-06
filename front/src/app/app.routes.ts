@@ -4,6 +4,9 @@ import { MainLayoutComponent } from './layout/main-layout/main-layout.component'
 import { AuthGuard } from './core/guards/auth.guard';
 import { AdminGuard } from './core/guards/admin.guard';
 import { UsuariosComponent } from './pages/admin/usuarios/usuarios.component';
+import { EstoqueComponent } from './pages/admin/estoque/estoque.component';
+import { OperadorGuard } from './core/guards/operador.guard';
+import { CaixaComponent } from './pages/caixa/caixa.component';
 
 
 export const routes: Routes = [
@@ -16,11 +19,26 @@ export const routes: Routes = [
         component: MainLayoutComponent,
         canActivate: [AuthGuard],
         children: [
+            // Rotas de Admin
             {
                 path: 'admin/usuarios',
                 component: UsuariosComponent,
-                canActivate: [AdminGuard]
+                canActivate: [AdminGuard] // Protegido (só ADMIN)
             },
+            {
+                path: 'admin/estoque',
+                component: EstoqueComponent,
+                canActivate: [AdminGuard] // Protegido (só ADMIN)
+            },
+            {
+                path: 'caixa',
+                component: CaixaComponent,
+                canActivate: [OperadorGuard] // Protegida (só OPERADOR)
+            },
+            // {
+            //     path: 'relatorios',
+            //     component: RelatoriosComponent
+            // }
         ]
     },
 

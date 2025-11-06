@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface MovimentoEstoqueRepository extends JpaRepository<MovimentoEstoque, Long> {
-    Optional<MovimentoEstoque> findByID(Long id);
+    Optional<MovimentoEstoque> findById(Long id);
 }

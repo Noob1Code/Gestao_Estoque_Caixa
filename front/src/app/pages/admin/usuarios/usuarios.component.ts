@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { UsuarioService } from '../../../core/services/usuario.service';
-import { Perfil, UsuarioRequestDTO, UsuarioResponseDTO } from '../../../core/models/usuario.dto';
-import { MessageService, ConfirmationService, MenuItem } from 'primeng/api';
+import { UsuarioRequestDTO, UsuarioResponseDTO } from '../../../core/models/usuario.dto';
+import { MessageService, ConfirmationService } from 'primeng/api';
+import { AuthService } from '../../../core/services/auth.service'; 
 
 // Importações PrimeNG
 import { TableModule } from 'primeng/table';
@@ -38,7 +39,7 @@ import { PasswordModule } from 'primeng/password';
   ],
   templateUrl: './usuarios.component.html',
   styleUrls: ['./usuarios.component.css'],
-  providers: [ConfirmationService] 
+  providers: [ConfirmationService]
 })
 export class UsuariosComponent implements OnInit {
 
@@ -58,14 +59,15 @@ export class UsuariosComponent implements OnInit {
     private fb: FormBuilder,
     private usuarioService: UsuarioService,
     private messageService: MessageService,
-    private confirmationService: ConfirmationService
+    private confirmationService: ConfirmationService,
+    private authService: AuthService 
   ) { }
 
   ngOnInit(): void {
     this.usuarioForm = this.fb.group({
       nomeCompleto: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
-      senha: [''], 
+      senha: [''],
       perfil: [null, [Validators.required]],
       ativo: [true, [Validators.required]]
     });
@@ -134,6 +136,10 @@ export class UsuariosComponent implements OnInit {
       this.usuarioService.atualizar(this.selectedUsuarioId, request).subscribe({
         next: (response) => {
           this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: `Usuário ${response.nomeCompleto} atualizado.` });
+          const loggedUserId = this.authService.getLoggedUser?.id;
+          if (this.selectedUsuarioId === loggedUserId) {
+            this.authService.updateLoggedUser(response);
+          }
           this.fecharDialog();
           this.carregarUsuarios();
         },
@@ -183,17 +189,16 @@ export class UsuariosComponent implements OnInit {
 
   private setSenhaValidators(isRequired: boolean): void {
     const senhaControl = this.usuarioForm.get('senha');
+    
+    const strengthValidators = [
+        Validators.minLength(8),
+        Validators.pattern('^(?=.*[A-Z])(?=.*\\d).*$') 
+    ];
+
     if (isRequired) {
-      senhaControl?.setValidators([
-        Validators.required,
-        Validators.minLength(8),
-        Validators.pattern('^(?=.*[A-Z])(?=.*\\d).*$')
-      ]);
+      senhaControl?.setValidators([Validators.required, ...strengthValidators]);
     } else {
-      senhaControl?.setValidators([
-        Validators.minLength(8),
-        Validators.pattern('^(?=.*[A-Z])(?=.*\\d).*$')
-      ]);
+      senhaControl?.setValidators(strengthValidators);
     }
     senhaControl?.updateValueAndValidity();
   }

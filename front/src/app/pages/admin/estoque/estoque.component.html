@@ -8,9 +8,10 @@
                 label="Novo Produto" 
                 icon="pi pi-plus" 
                 styleClass="p-button-success" 
-                (click)="abrirDialogNovo()"> </p-button>
+                (click)="abrirDialogNovo()">
+            </p-button>
         </div>
-        </p-toolbar>
+    </p-toolbar>
 
     <p-table [value]="produtos" [paginator]="true" [rows]="10" responsiveLayout="scroll">
         <ng-template pTemplate="header">
@@ -44,8 +45,7 @@
                         pTooltip="Movimentar Estoque (Entrada/Ajuste)"
                         (click)="abrirDialogMovimento(produto)">
                     </p-button>
-                    <p-button 
-                              icon="pi pi-pencil" 
+                    <p-button icon="pi pi-pencil" 
                               styleClass="p-button-rounded p-button-info mr-2"
                               pTooltip="Editar Produto"
                               (click)="abrirDialogEditar(produto)">
@@ -60,8 +60,11 @@
         </ng-template>
     </p-table>
 </p-card>
+
+
 <p-dialog 
-    [(visible)]="produtoDialog" [style]="{width: '500px'}" 
+    [(visible)]="produtoDialog" 
+    [style]="{width: '500px'}" 
     [header]="isEditMode ? 'Editar Produto' : 'Novo Produto'" 
     [modal]="true" 
     (onHide)="fecharDialog()">
@@ -95,6 +98,15 @@
                                styleClass="w-full">
                 </p-inputNumber>
             </div>
+            <div class="field col-6">
+                <label for="quantidadeEstoque">Qtd. em Estoque</label>
+                <p-inputNumber id="quantidadeEstoque" 
+                               formControlName="quantidadeEstoque" 
+                               [showButtons]="true"
+                               [min]="0"
+                               styleClass="w-full">
+                </p-inputNumber>
+            </div>
         </div>
 
         <div class="flex justify-content-end gap-2 mt-5">
@@ -123,6 +135,7 @@
     (onHide)="fecharDialogMovimento()">
 
     <form [formGroup]="movimentoForm" (ngSubmit)="salvarMovimento()">
+        
         <div class="field">
             <label for="tipo">Tipo de Movimentação</label>
             <p-dropdown id="tipo" 
@@ -134,6 +147,7 @@
                         styleClass="w-full">
             </p-dropdown>
         </div>
+
         <div class="field">
             <label for="quantidade">Quantidade</label>
             <p-inputNumber id="quantidade" 
@@ -146,6 +160,7 @@
                 Para 'AJUSTE', use positivos (ex: 1) ou negativos (ex: -2 para perdas).
             </small>
         </div>
+
         <div class="field">
             <label for="motivo">Motivo (Opcional)</label>
             <textarea pInputTextarea 
@@ -156,6 +171,7 @@
                       placeholder="Ex: Recebimento NF 123, Ajuste de balanço, Perda por vencimento.">
             </textarea>
         </div>
+
         <div class="flex justify-content-end gap-2 mt-5">
             <p-button 
                 label="Cancelar" 
