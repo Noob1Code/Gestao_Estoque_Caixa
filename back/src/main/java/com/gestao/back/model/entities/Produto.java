@@ -5,8 +5,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "Produtos")
@@ -18,7 +20,7 @@ public class Produto {
 
     @NotBlank(message = "Nome é obrigatorio")
     @Column(nullable = false)
-    private int codigo;
+    private String codigo;
 
     @NotBlank(message = "Nome é obrigatorio")
     @Column(nullable = false)
@@ -28,13 +30,13 @@ public class Produto {
     @Column(nullable = false)
     private String categoria;
 
-    @NotBlank(message = "Quantidade é obrigatorio")
-    @Positive(message = "Quantidade deve ser maior que 0")
+    @NotNull(message = "Quantidade é obrigatorio")
+    @Min(value = 0, message = "Quantidade não pode ser negativa")
     @Column(nullable = false)
     private int quantidadeEstoque;
 
-    @NotBlank(message = "Preço é obrigatorio")
-    @Positive(message = "Quantidade deve ser maior que 0")
+    @NotNull(message = "Preço é obrigatorio")
+    @DecimalMin(value = "0.0", inclusive = true, message = "Preço não pode ser negativo")
     @Column(nullable = false)
     private BigDecimal precoUnitario;
 
@@ -50,7 +52,7 @@ public class Produto {
 
     }
 
-    public Produto(String categoria, long id, int codigo, String nome, BigDecimal preco, int quantidadeEstoque) {
+    public Produto(String categoria, long id, String codigo, String nome, BigDecimal preco, int quantidadeEstoque) {
         this.categoria = categoria;
         this.id = id;
         this.codigo = codigo;
@@ -99,11 +101,11 @@ public class Produto {
         this.precoUnitario = precoUnitario;
     }
 
-    public int getCodigo() {
+    public String getCodigo() {
         return codigo;
     }
 
-    public void setCodigo(int codigo) {
+    public void setCodigo(String codigo) {
         this.codigo = codigo;
     }
 

@@ -24,7 +24,6 @@ public class UsuarioRequestDTO {
     @NotBlank(message = "E-mail é obrigatório")
     private String email;
 
-    @NotBlank(message = "Senha é obrigatória")
     @Size(min = 8, message = "Senha deve ter no mínimo 8 caracteres")
     @Pattern(regexp = "^(?=.*[A-Z])(?=.*\\d).*$",
             message = "Senha deve conter ao menos 1 letra maiúscula e 1 número")

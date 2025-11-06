@@ -2,10 +2,8 @@ package com.gestao.back.model.entities;
 
 import com.gestao.back.model.enums.TipoMovimento;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Positive;
-
 import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "MovimetoProdutos")
 public class MovimentoEstoque {
@@ -14,8 +12,6 @@ public class MovimentoEstoque {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Quantidade é obrigatorio")
-    @Positive(message = "Quantidade deve ser maior que 0")
     @Column(nullable = false)
     private int quantidade;
 
@@ -30,8 +26,6 @@ public class MovimentoEstoque {
     @Column(nullable = false)
     private LocalDateTime data;
 
-    @NotBlank(message = "Motivo é obrigatorio")
-    @Column(nullable = false)
     private String Motivo;
 
     @ManyToOne

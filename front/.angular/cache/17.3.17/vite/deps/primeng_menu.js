@@ -6,11 +6,7 @@ import {
 import {
   Tooltip,
   TooltipModule
-} from "./chunk-3VRHFY3H.js";
-import {
-  DomSanitizer
-} from "./chunk-Y6VDGAZN.js";
-import "./chunk-2IRRX5HF.js";
+} from "./chunk-NXB5JTTQ.js";
 import {
   animate,
   style,
@@ -18,13 +14,25 @@ import {
   trigger
 } from "./chunk-I54QP7DZ.js";
 import {
+  DomSanitizer
+} from "./chunk-Y6VDGAZN.js";
+import "./chunk-2IRRX5HF.js";
+import {
   Ripple,
   RippleModule
-} from "./chunk-SNWCRCSZ.js";
+} from "./chunk-C6IC6WIT.js";
 import {
   ConnectedOverlayScrollHandler,
   DomHandler
 } from "./chunk-JZQAVOZS.js";
+import {
+  OverlayService,
+  PrimeNGConfig,
+  PrimeTemplate,
+  SharedModule,
+  UniqueComponentId,
+  zindexutils
+} from "./chunk-MW6N3XTI.js";
 import {
   CommonModule,
   DOCUMENT,
@@ -35,14 +43,6 @@ import {
   NgTemplateOutlet,
   isPlatformBrowser
 } from "./chunk-T76FZRMF.js";
-import {
-  OverlayService,
-  PrimeNGConfig,
-  PrimeTemplate,
-  SharedModule,
-  UniqueComponentId,
-  zindexutils
-} from "./chunk-MW6N3XTI.js";
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,

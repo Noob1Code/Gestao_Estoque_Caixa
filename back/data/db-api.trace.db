@@ -1,2 +1,5 @@
 2025-11-04 17:15:17.526251-03:00 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLNonTransientException: The object is already closed [90007-224]
+2025-11-06 00:21:52.813378-03:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "delete [*]table MOVIMETO_PRODUTOS"; expected "identifier"; SQL statement:
+delete table MOVIMETO_PRODUTOS [42001-224]
