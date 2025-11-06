@@ -1,0 +1,44 @@
+import { Routes } from '@angular/router';
+import { LoginComponent } from './pages/login/login.component';
+import { MainLayoutComponent } from './layout/main-layout/main-layout.component';
+import { AuthGuard } from './core/guards/auth.guard';
+import { AdminGuard } from './core/guards/admin.guard';
+import { UsuariosComponent } from './pages/admin/usuarios/usuarios.component';
+import { EstoqueComponent } from './pages/admin/estoque/estoque.component';
+
+
+export const routes: Routes = [
+    { 
+        path: 'login', 
+        component: LoginComponent 
+    },
+    {
+        path: '', 
+        component: MainLayoutComponent,
+        canActivate: [AuthGuard],
+        children: [
+            // Rotas de Admin
+            { 
+                path: 'admin/usuarios', 
+                component: UsuariosComponent, 
+                canActivate: [AdminGuard] // Protegido (só ADMIN)
+            },
+            {
+                path: 'admin/estoque',
+                component: EstoqueComponent,
+                canActivate: [AdminGuard] // Protegido (só ADMIN)
+            },
+            // { 
+            //     path: 'caixa', 
+            //     component: CaixaComponent, 
+            //     canActivate: [OperadorGuard]
+            // },
+            // {
+            //     path: 'relatorios',
+            //     component: RelatoriosComponent
+            // }
+        ]
+    },
+
+    { path: '**', redirectTo: 'login' }
+];
